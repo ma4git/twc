@@ -19,15 +19,16 @@ end
 
 # If /etc/nginx/conf.d/default.conf is out of policy, replace with the template copy and reload nginx.
 template '/etc/nginx/conf.d/default.conf' do
+#  notifies :run, 'execute[set_ephemeral_port_range]', :immediately
   source 'etc.nginx.conf.d.default.erb'
-  notifies :reload, 'service[nginx]', :immediately
+#  notifies :reload, 'service[nginx]', :immediately
 end
 
 # 
 service 'nginx' do
-#  supports :restart => true, :reload => true
+  supports :restart => true, :reload => true
   notifies :run, 'execute[set_ephemeral_port_range]', :immediately
   action [:enable, :start]
-#  subscribes :reload, 'template[/etc/nginx/conf.d/default.conf]', :immediately
+  subscribes :reload, 'template[/etc/nginx/conf.d/default.conf]', :immediately
 end
 
